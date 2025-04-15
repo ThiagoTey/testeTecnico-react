@@ -5,11 +5,16 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [search, setSearch] = useState("");
 
   const searchProfile = async () => {
     try {
       setIsLoading(true);
-      const data = await fetch("https://api.github.com/users/thiagotey");
+      setUserData(null);
+      setError(null);
+      setImageLoaded(false)
+      const data = await fetch(`https://api.github.com/users/${search}`);
 
       if (!data.ok) {
         throw new Error(`Erro: ${data.status}`);
@@ -44,32 +49,53 @@ function App() {
             className="bg-white text-black placeholder:text-black w-full h-[62px] rounded-[10px] pl-4 text-xl"
             type="text"
             placeholder="Digite um usuário do github"
+            onChange={(e) => setSearch(e.target.value)}
+            value={search}
           />
           <button
             onClick={() => searchProfile()}
-            className="w-[62px] h-[62px] bg-[#005CFF] flex items-center justify-center rounded-[10px] absolute right-0 border border-white cursor-pointer"
+            disabled={isLoading}
+            className="w-[62px] h-[62px] bg-[#005CFF] flex items-center justify-center rounded-[10px] absolute right-0 border border-white cursor-pointer disabled:bg-gray-600"
           >
             <img src="/search.svg" alt="search-icon" />
           </button>
         </div>
 
-        <div className="bg-[#D9D9D9]  w-[804px] rounded-[25px] min-h-[88px] p-5 flex items-center gap-[32px]">
-          {/* Profile Picture */}
-          <div className="rounded-full border-[#005CFF] border-2 w-[220px] h-[220px] overflow-hidden">
-            <img
-              className="object-cover w-full h-full"
-              src={userData.avatar_url}
-              alt="profile-picture"
-            />
-          </div>
+        <div className={`bg-[#D9D9D9]  w-[804px] rounded-[25px] min-h-[88px] p-5 flex items-center gap-[32px]  ${error || isLoading || userData ? "visible" : "invisible"}`}>
+          {isLoading && (
+            <div className="m-auto w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          )}
 
-          {/* Dados usuário */}
-          <div>
-            <h2 className="text-[#005CFF] text-xl font-bold">{userData.name}</h2>
-            <p className="text-black text-[15px] mt-4">
-              {userData.bio ? userData.bio : "Nada especificado..."}
+          {userData && (
+            <>
+              {/* Profile Picture */}
+              <div className="rounded-full border-[#005CFF] border-2 w-full h-[220px] max-w-[220px] max-h-[220px] overflow-hidden">
+                <img
+                  onLoad={() => setImageLoaded(true)}
+                  className={`object-cover w-full h-full block ${!imageLoaded && "blur-3xl bg-gray-400"}`}
+                  src={userData.avatar_url}
+                  alt="profile-picture"
+                />
+              </div>
+
+              {/* Dados usuário */}
+              <div>
+                <h2 className="text-[#005CFF] text-xl font-bold">
+                  {userData.name}
+                </h2>
+                <p className="text-black text-[15px] mt-4">
+                  {userData.bio ? userData.bio : "Bio : Nada especificado..."}
+                </p>
+              </div>
+            </>
+          )}
+
+          {error && (
+            <p className="text-[#FF0000] text-xl m-auto text-center w-full max-w-[500px]">
+              Nenhum perfil foi encontrado com ese nome de usuário. Tente
+              novamente
             </p>
-          </div>
+          )}
         </div>
       </div>
     </section>
