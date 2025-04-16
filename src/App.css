@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+.radial-gradient{
+    background: #005DFF;
+    background: radial-gradient(50% 50% at 50% 50%, #005CFF 0%, rgba(0, 0, 0, 0) 100%);
+    @apply absolute -z-10;
+}

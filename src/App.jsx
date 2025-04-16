@@ -98,6 +98,13 @@ function App() {
           )}
         </div>
       </div>
+
+      {/* Gradientes do fundo */}
+      <div className="radial-gradient absolute w-[888px] h-[888px] left-1/2 top-[-300px] translate-x-[200px]" />
+
+      <div className="radial-gradient w-[674px] h-[674px] left-1/2 bottom-0 translate-x-[-1200px]"/>
+
+      <img className="absolute left-1/2 translate-x-[-650px] translate-y-[-260px] -z-10" src="/pontos.png" alt="design-fundo"/>
     </section>
   );
 }
